@@ -45,6 +45,9 @@ class MyViT(nn.Module):
 
         assert img_size[0] % patch_size[0] == 0 and img_size[1] % patch_size[1] == 0, "Img shape not entirely divisible by patch size"
 
+        self.img_size = img_size
+        self.patch_size = patch_size
+
         num_patches = (img_size[0] // patch_size[0]) * (img_size[1] // patch_size[1])
         patch_dim = num_channels * patch_size[0] * patch_size[1]
         
@@ -81,7 +84,7 @@ class MyViT(nn.Module):
         self.embedding_dropout = nn.Dropout(embedding_dropout)
         self.transformer = TransformerEncoderBlock(dim = dim, depth = depth, heads = heads, dim_head = dim_head, mlp_dim = mlp_dim, dropout = dropout)
         
-        # self.to_latent = nn.Identity() ¿?
+        self.to_latent = nn.Identity() # ¿?
         self.mlp_head = nn.Sequential(
            nn.LayerNorm(dim),
            nn.Linear(dim, num_classes)
@@ -107,7 +110,7 @@ class MyViT(nn.Module):
         tokens = self.embedding_dropout(tokens)
         x = self.transformer(tokens)[:, 0] # TODO: evaluate mean pooling method
 
-        # x = self.to_latent(x) # ¿?
+        x = self.to_latent(x) # ¿?
         return self.mlp_head(x)
 
 if __name__ == '__main__':
