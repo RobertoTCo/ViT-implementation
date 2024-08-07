@@ -111,7 +111,8 @@ class MyViT(nn.Module):
         x = self.transformer(tokens)[:, 0] # TODO: evaluate mean pooling method
 
         x = self.to_latent(x) # ¿?
-        return self.mlp_head(x)
+        y_ = self.mlp_head(x)
+        return y_
 
 if __name__ == '__main__':
   # Current model
